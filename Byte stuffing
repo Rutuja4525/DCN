@@ -1,0 +1,164 @@
+#include<stdio.h>
+#include<stdlib.h>
+void bytestuf1(int f1[],int f2[],int f3[],int n)
+ {
+ 	int flag[]={0,1,1,1,1,1,1,0};
+	int i;
+	for(i=0;i<8;i++)
+	{
+		f3[i]=flag[i];
+	}
+	i=8;
+	int m=0;
+	while(i<8+n+1 && m<n+1)
+	{
+		f3[i]=f2[m];
+		i++;
+		m++;
+	}
+	m=0;
+	while(m<8 && i<16+n+1)
+		{
+		f3[i]=flag[m];
+		i++;
+        m++;
+		}
+	int totallen=16+n+1;
+	int k;
+printf("\nAFTER BYTE STUFFING FRAME IS: ");
+	for(k=0;k<totallen;k++)
+	{
+	printf("%d",f3[k]);
+	}
+ }
+ void bytestuf2(int f1[],int f2[],int f3[],int n)
+ {
+ 	int flag[]={0,1,1,1,1,1,1,0};
+	int i;
+	for(i=0;i<8;i++)
+	{
+		f3[i]=flag[i];
+	}
+	i=8;
+	int m=0;
+	while(i<8+n && m<n)
+	{
+		f3[i]=f2[m];
+		i++;
+        m++;
+	}
+	m=0;
+	while(m<8 && i<16+n)
+		{
+		f3[i]=flag[m];
+		i++;
+		m++;
+		}
+	int totallen=16+n;
+	int k;
+printf("\nAFTER BYTE STUFFING FRAME IS: ");
+	for(k=0;k<totallen;k++)
+	{
+	printf("%d",f3[k]);
+	}
+ }
+void bitstuffing(int f1[],int f2[],int f3[],int n)
+{
+	int i=0;
+	int j=0;
+	int count=0;
+	while(i<n)
+	{
+        if(f1[i]==0)
+		{
+			f2[j]=f1[i];
+			count=0;
+		}
+		if(f1[i]==1)
+		{
+			if(count>=5)
+			{
+				f2[j]=0;
+				j++;
+				f2[j]=f1[i];
+				count=0;
+			}
+		else if(count<5)
+			{
+				count++;
+				f2[j]=f1[i];
+				if(count==5)
+				{
+					j++;
+					f2[j]=0;
+					count=0;
+				}
+			}
+
+		}
+		i++;
+		j++;
+
+	}
+	int k;
+	printf("\nAFTER BIT STUFFING FRAME IS :");
+	for(k=0;k<j;k++)
+	{
+		printf("%d",f2[k]);
+	}
+	printf("\n");
+	if(k==n)
+	{
+		bytestuf2(f1,f2,f3,n);
+	}
+	else
+	{
+		bytestuf1(f1,f2,f3,n);
+	}
+}
+
+ //BYTE UNSUDFFING
+ void byteunstuf(int f1[],int f2[],int f3[],int n)
+ {
+ 	int i;
+ 	for(i=0;i<8;i++)
+	{
+		f3[i]=-1;
+	}
+	i=8;
+	int m=0;
+	while(i<8+n && m<n)
+	{
+		f3[i]=f2[m];
+		i++;
+		m++;
+	}
+	m=0;
+	while(m<8 && i<16+n)
+		{
+		f3[i]=-1;
+		i++;
+		m++;
+		}
+	int totallen=n;
+	int k;
+	printf("\nAFTER BYTE UNSTUFFING FRAME IS : ");
+	for(k=0;k<totallen;k++)
+	{
+	printf("%d",f1[k]);
+	}
+ }
+int main()
+{
+	int a,n;
+	printf("\nENTER THE FRAME SIZE :");
+	scanf("%d",&n);
+	int f1[20],f2[50],f3[50];
+	printf("\nENTER THE FRAME IN THE FORM OF O AND 1 :\n");
+	for(a=0;a<n;a++)
+	{
+		scanf("%d",&f1[a]);
+	}
+	bitstuffing( f1,f2,f3,n);
+	byteunstuf(f1,f2,f3,n);
+}
